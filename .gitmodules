@@ -1,0 +1,3 @@
+[submodule "d-frontend/jwtd"]
+	path = d-backend/jwtd
+	url = https://github.com/olehlong/jwtd.git
