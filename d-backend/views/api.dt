@@ -1,0 +1,10 @@
+doctype html
+html
+	head
+		title Viejs.Login example - Private Area
+	body
+		p ¡Bienvenido al área privada de #{name}!
+		ul
+			li: a(href='/api.js') Archivo Javascript para la API 
+			li: a(href='logout') Salir
+			

@@ -1,0 +1,20 @@
+doctype html
+html
+	head
+		title Luca Server
+	body
+		p Este es #{name}!
+		
+		p  
+			form( method="post", action="/login")
+				div
+					label(for='username') Usuario
+					input(name='username', id="username")
+				div
+					label(for='password') Contraseña
+					input(name='password', id="password")
+				div
+					p
+					br
+					button(type='submit') Entrar para ver la API
+	

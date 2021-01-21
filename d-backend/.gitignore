@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/d-frontend
+d-backend.so
+d-backend.dylib
+d-backend.dll
+d-backend.a
+d-backend.lib
+d-backend-test-*
+*.exe
+*.o
+*.obj
+*.lst
+d-backend_app
