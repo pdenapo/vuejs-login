@@ -1,6 +1,8 @@
 
 # We implement jwt using Flask-JWT-Extended
 # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
+# https://github.com/vimalloc/flask-jwt-extended 
+# License: MIT
 
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
@@ -18,6 +20,7 @@ jwt = JWTManager(app)
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
 # it to the caller however you choose.
+
 @app.route('/login', methods=['POST'])
 def login():
     if not request.is_json:
