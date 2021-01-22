@@ -9,3 +9,9 @@ Several backend applications are provided.
 * One in D language
 
 * One in the Python language
+
+## Runing the Backend
+
+yarn install  : installs all the dependencies. 
+
+yarn serve : serves the backend in a development server.
