@@ -4,7 +4,15 @@
       <h1>Bienvenido al área privada de Vue.js Login</h1>
     </span>
 
-    {{ autenticado }}
+    <p>
+      {{ autenticado }}
+
+      <br />
+    </p>
+
+    <p>
+      {{ datos_recibidos }}
+    </p>
 
     <span v-if="!$store.getters.user_authenticated">
       <h1>
@@ -37,7 +45,7 @@ export default {
     var autenticado = !this.$store.getters.user_authenticated;
     //console.log("autenticado=", autenticado);
     if (autenticado) this.$router.push("/login");
-    var server_url = API_URL + "about?";
+    var server_url = API_URL + "message?";
     fetch(server_url, {
       headers: this.$store.getters.AuthHeaders,
     })

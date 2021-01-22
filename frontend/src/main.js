@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router';
 
-export const SERVER_URL = 'http://192.168.0.100:8082'
-export const API_URL = 'http://192.168.0.100:8082/api/'
+// Leemos el archivo JSON de configuración
+import * as config from '../../config.json';
+console.log("config=", config)
+const SERVER_URL = 'http://' + config.server_address + ':' + config.server_port
+export const API_URL = `${SERVER_URL}/api/`
 
 Vue.config.devtools = true
 Vue.config.productionTip = false;

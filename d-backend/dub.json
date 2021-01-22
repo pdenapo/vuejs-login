@@ -3,11 +3,11 @@
 	"authors": [
 		"Pablo De Napoli"
 	],
-	"description": "Example front end in D language",
+	"description": "Example backend in D language",
 	"license": "MIT",
 	"dependencies": {
 		"d-backend:app": ">=0.0.0",
-		"d-backend:jwtd": ">=0.0.0",
+		"d-backend:jwtd": ">=0.0.0"
 	},
 	"subPackages": [
 		"jwtd",

@@ -17,8 +17,8 @@ import configuration;
 
 void main()
 {
+	read_configuration();
 	auto router = new URLRouter;
-
     auto rest_settings = new RestInterfaceSettings();
     string my_url = "http://" ~ my_configuration.server_address ~ ":" ~ to!string(my_configuration.server_port);
 	rest_settings.baseURL= URL(my_url ~ "/api");
