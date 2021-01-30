@@ -47,9 +47,9 @@ export const store = new Vuex.Store({
         }
       })
 
-
       if (await response.status == 200) {
         let data = await response.json();
+        console.log("data=", data)
         context.commit('set_token', data.AuthToken);
       }
       else

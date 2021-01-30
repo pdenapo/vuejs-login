@@ -29,12 +29,12 @@
       <!-- <v-btn v-if="!user.authenticated" text-to="/signup">Sign Up</v-btn> -->
       <!-- <v-btn v-if="$store.getters.user_authenticated" text to="/iniciales/"
         >Saldos Iniciales</v-btn
-      >
+      >      -->
 
       <v-btn v-if="$store.getters.user_authenticated" text @click="logout()"
         >Salir</v-btn
       >
-      -->
+
       <v-spacer></v-spacer>
       <!--
       <v-btn text to="/singin">SIGN IN</v-btn>
