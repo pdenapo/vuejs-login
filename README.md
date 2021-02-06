@@ -15,3 +15,9 @@ Several backend applications are provided.
 yarn install  : installs all the dependencies. 
 
 yarn serve : serves the backend in a development server.
+
+The different backens read the file config file, defining the 
+following variables
+
+* server_address
+* server_port 

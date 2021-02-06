@@ -36,10 +36,10 @@ struct User
  string id;
 }
 
-struct SigInMessage 
+struct SignInMessage 
 {
  string statusMessage;
- string AuthToken;
+ string Authorization;
 }
 
 
@@ -54,7 +54,7 @@ static struct AuthInfo {
 @requiresAuth
 interface API_Interface
 {
-	 @anyAuth string getMessage();
+	 @anyAuth string[string] getMessage();
 	 @anyAuth string getHello(string nombre);
 
 	//string postLogin(string username, string password);
@@ -62,7 +62,7 @@ interface API_Interface
 	
 	 static if (use_jwt)
 	{
-	     @headerParam("username", "username") @headerParam("password", "password") @noAuth SigInMessage postSignIn(string username, string password);
+	     @headerParam("username", "username") @headerParam("password", "password") @noAuth SignInMessage postSignIn(string username, string password);
 	}
 }	
 
@@ -89,12 +89,12 @@ class API : API_Interface
 		JSONValue payload_json;
 		logInfo("Decoding jwt token");
 		
-		if(!("AuthToken" in req.headers))
+		if(!("Authorization" in req.headers))
 			throw new HTTPStatusException(HTTPStatus.unauthorized,"No Token");
 		
 		try
 		{
-		 payload_json = decode(req.headers["AuthToken"],my_configuration.server_secret_key);
+		 payload_json = decode(req.headers["Authorization"],my_configuration.server_secret_key);
 		}
 		catch (VerifyException)
 		{
@@ -127,9 +127,11 @@ class API : API_Interface
 		 return this.auth_info;
 	}
 
-	@anyAuth @safe override string getMessage()
+	@anyAuth @safe override string[string] getMessage()
 	{
-		return my_configuration.program_name ~ " listeting to requests on port " ~ to!string(my_configuration.server_port);
+		logInfo("getMessage method called");
+		return ["logged_in_as":auth_info.userName];
+		//return my_configuration.program_name ~ " listeting to requests on port " ~ to!string(my_configuration.server_port);
 	}
 	
 	// llamar con http://127.0.0.1:8081/hello?nombre=Pablo
@@ -143,7 +145,7 @@ class API : API_Interface
 		
 	// Method for user Sing In
 	
-	@noAuth override SigInMessage postSignIn(string username, string password)
+	@noAuth override SignInMessage postSignIn(string username, string password)
 	{  
 	   logInfo("postSignIn method called");
 	   
@@ -157,7 +159,7 @@ class API : API_Interface
 	   {
 	    auto user = User(username);
 	    string token = createToken(user,token_duration);
-	    return SigInMessage("Sucesfully Logged in", token);
+	    return SignInMessage("Sucesfully Logged in", token);
 	   }
 	  else 
 	   throw new HTTPStatusException(HTTPStatus.unauthorized,"Invalid user/password combination");
@@ -182,7 +184,7 @@ class API : API_Interface
   logInfo("created token" ~ to!string(payload_json));
   string server_secret_key = my_configuration.server_secret_key;
   string token= encode(payload_json,server_secret_key,JWTAlgorithm.HS256);
-  return token;   	
+  return "Bearer " ~ token;   	
  }
 }
 
