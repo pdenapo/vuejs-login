@@ -20,7 +20,7 @@ export const store = new Vuex.Store({
     set_token(state, token) {
       console.log("Mutation set_token token=", token)
       state.token = token;
-      localStorage.setItem('AuthToken', token);
+      localStorage.setItem('Authorization', token);
     }
   },
   getters: {
@@ -31,7 +31,7 @@ export const store = new Vuex.Store({
     },
     AuthHeaders: state => {
       return {
-        'AuthToken': state.token
+        'Authorization': state.token
       }
     }
   },
@@ -50,17 +50,17 @@ export const store = new Vuex.Store({
       if (await response.status == 200) {
         let data = await response.json();
         console.log("data=", data)
-        context.commit('set_token', data.AuthToken);
+        context.commit('set_token', data.Authorization);
       }
       else
         context.commit('set_token', null);
     },
     remove_token(context) {
-      localStorage.removeItem("AuthToken");
+      localStorage.removeItem("Authorization");
       context.commit("set_token", null);
     },
     checkAuth(context) {
-      var jwt = localStorage.getItem('AuthToken')
+      var jwt = localStorage.getItem('Authorization')
       if (jwt)
         context.commit('set_token', jwt)
 
