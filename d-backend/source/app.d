@@ -20,6 +20,9 @@ void main()
 	read_configuration();
 	auto router = new URLRouter;
     auto rest_settings = new RestInterfaceSettings();
+	logInfo("D backend running.");
+	logInfo("This backend has both a Rest API and a Web Interface.");
+
     string my_url = "http://" ~ my_configuration.server_address ~ ":" ~ to!string(my_configuration.server_port);
 	rest_settings.baseURL= URL(my_url ~ "/api");
  
@@ -30,6 +33,11 @@ void main()
 	web_interface.api = my_api;
 
 	router.registerWebInterface(web_interface);
+
+	 // CORS
+    router.any("/api/*", delegate void(scope HTTPServerRequest req, scope HTTPServerResponse res) {
+        res.headers["Access-Control-Allow-Origin"] = "*";
+    });
 
     auto settings = new HTTPServerSettings;
 	settings.port =  my_configuration.server_port;
@@ -42,7 +50,6 @@ void main()
 
 
 	listenHTTP(settings, router);
-	logInfo("Por favor abra " ~ my_url ~ " en su navegador.");
 	
 	runEventLoop();
 	// Originalmente usábamos esta versión que procesa lineas de comandos y genera

@@ -52,7 +52,7 @@ export default {
       .then((res) => res.json())
       .then((datos) => {
         this.datos_recibidos = datos;
-        //console.log("DEBUG datos_recibidos=", JSON.stringify(datos));
+        console.log("DEBUG datos_recibidos=", JSON.stringify(datos));
       })
       .catch((error) => {
         console.log(error);

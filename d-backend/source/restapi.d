@@ -92,9 +92,20 @@ class API : API_Interface
 		if(!("Authorization" in req.headers))
 			throw new HTTPStatusException(HTTPStatus.unauthorized,"No Token");
 		
+		string sent_token;
 		try
 		{
-		 payload_json = decode(req.headers["Authorization"],my_configuration.server_secret_key);
+		  // we remove Bearer from the authorization	
+		 sent_token= req.headers["Authorization"].split(" ")[1];		
+		}
+		catch (VerifyException)
+		{
+		  throw new HTTPStatusException(HTTPStatus.unauthorized,"Error parsing athorization.");	
+		}
+
+		try
+		{
+		 payload_json = decode(sent_token,my_configuration.server_secret_key);
 		}
 		catch (VerifyException)
 		{
@@ -130,7 +141,7 @@ class API : API_Interface
 	@anyAuth @safe override string[string] getMessage()
 	{
 		logInfo("getMessage method called");
-		return ["logged_in_as":auth_info.userName];
+		return ["statusMessage":"Ok","logged_in_as":auth_info.userName];
 		//return my_configuration.program_name ~ " listeting to requests on port " ~ to!string(my_configuration.server_port);
 	}
 	
@@ -159,7 +170,7 @@ class API : API_Interface
 	   {
 	    auto user = User(username);
 	    string token = createToken(user,token_duration);
-	    return SignInMessage("Sucesfully Logged in", token);
+	    return SignInMessage("Sucesfully Logged in", "Bearer " ~ token);
 	   }
 	  else 
 	   throw new HTTPStatusException(HTTPStatus.unauthorized,"Invalid user/password combination");
@@ -184,7 +195,7 @@ class API : API_Interface
   logInfo("created token" ~ to!string(payload_json));
   string server_secret_key = my_configuration.server_secret_key;
   string token= encode(payload_json,server_secret_key,JWTAlgorithm.HS256);
-  return "Bearer " ~ token;   	
+  return  token;   	
  }
 }
 
