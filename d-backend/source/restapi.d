@@ -40,6 +40,7 @@ struct SignInMessage
 {
  string statusMessage;
  string Authorization;
+ string backend = "D backend";
 }
 
 
@@ -173,7 +174,7 @@ class API : API_Interface
 	    return SignInMessage("Sucesfully Logged in", "Bearer " ~ token);
 	   }
 	  else 
-	   throw new HTTPStatusException(HTTPStatus.unauthorized,"Invalid user/password combination");
+	   throw new HTTPStatusException(HTTPStatus.unauthorized,"Invalid user/password combination.");
 	}
  }
 
@@ -188,8 +189,8 @@ class API : API_Interface
   DateTime current_date = to!DateTime(currentTime);
   if (expiration_duration)
   {
-    DateTime expieraton_date =current_date + expiration_duration ;
-    payload["exp"] = JSONValue(to!SysTime(expieraton_date).toUnixTime());
+    DateTime expiraton_date =current_date + expiration_duration ;
+    payload["exp"] = JSONValue(to!SysTime(expiraton_date).toUnixTime());
   }
   JSONValue payload_json= JSONValue(payload);
   logInfo("created token" ~ to!string(payload_json));

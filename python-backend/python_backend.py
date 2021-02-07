@@ -44,7 +44,8 @@ def sign_in():
     access_token = create_access_token(identity=username)
     result= jsonify({
         "statusMessage": "Sucesfully Logged in",
-        "Authorization": "Bearer "+ access_token
+        "Authorization": "Bearer "+ access_token, 
+        "backend": "Python backend"
     }), 200
     print ("result=",result)
     return result
