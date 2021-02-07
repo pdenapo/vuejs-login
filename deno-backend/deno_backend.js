@@ -19,39 +19,42 @@ router.get("/", (context) => {
 
 const app = new Application();
 
+async function sign_in(ctx)
+{
+   console.log("Method sign_in called.")
+   console.log("headers=",ctx.request.headers)
+   const  username = ctx.request.headers.get('username')
+   const  password = ctx.request.headers.get('password')
+   console.log("username=", username)
+   console.log("password=", password)
 
-router.post('/api/sign_in', (ctx) =>
- {
-    console.log("Method sign_in called.")
-    console.log("headers=",ctx.request.headers)
-    const  username = ctx.request.headers.get('username')
-    const  password = ctx.request.headers.get('password')
-    console.log("username=", username)
-    console.log("password=", password)
+   if (typeof username === 'undefined')
+   {
+       ctx.response.status = 400
+       ctx.response.body = {"statusMessage": "Missing username parameter"}
+   }
+   else if (typeof password === 'undefined')
+   {
+       ctx.response.status = 400
+       ctx.response.body = {"statusMessage": "Missing passord parameter"}
+   }
 
-    if (typeof username === 'undefined')
-    {
-        ctx.response.status = 400
-        ctx.response.body = {"statusMessage": "Missing username parameter"}
-    }
-    else if (typeof password === 'undefined')
-    {
-        ctx.response.status = 400
-        ctx.response.body = {"statusMessage": "Missing passord parameter"}
-    }
+   else {
+       const access_token = await create({ alg: "HS512", typ: "JWT" }, { "sub": username }, server_secret_key)
+       ctx.response.status = 200 
+       ctx.response.body = 
+        {
+       "statusMessage": "Sucesfully Logged in",
+       "Authorization": "Bearer "+ access_token
+        }
+   }
+   console.log("sending status=",ctx.response.status);    
+   console.log("sending body=",ctx.response.body);
 
-    else {
-        const access_token = await create({ alg: "HS512", typ: "JWT" }, { "sub": username }, server_secret_key)
-        ctx.response.status = 200 
-        ctx.response.body = 
-         {
-        "statusMessage": "Sucesfully Logged in",
-        "Authorization": "Bearer "+ access_token
-         }
-    }
+   //ctx.response.headers.set("Content-Type", "application/json")
+}
 
-    ctx.response.headers.set("Content-Type", "application/json")
-})
+router.post('/api/sign_in',sign_in)
 
 app.use(router.routes());
 app.use(router.allowedMethods());
