@@ -1,5 +1,5 @@
-import { Application, Router, Context } from "https://deno.land/x/oak/mod.ts";
-import { create } from "https://deno.land/x/djwt@v2.2/mod.ts";
+import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
+import { create, verify } from "https://deno.land/x/djwt@v2.2/mod.ts";
 
 // Reads the configuration shared between the server and the client
 
@@ -16,11 +16,12 @@ const server_url = `http://${config["server_address"]}:${
 const json_server_config = await Deno.readTextFile("../server_config.json");
 console.log("json_server_config=", json_server_config);
 const server_config = JSON.parse(json_server_config);
+const jwt_algorithm = "HS512";
 
-const server_secret_key = "my secret key"; // Change this!
+const server_secret_key = server_config["server_secret_key"];
 
 // Duración de un jwt antes de expirar en milisegundos
-const expiration_duration = 60 * 60 * 24; // un dia
+const jwt_duration = server_config["jwt_duration"];
 
 const router = new Router();
 
@@ -30,24 +31,24 @@ router.get("/", (context) => {
 
 const app = new Application();
 
-async function sign_in(ctx: Context ) {
+async function sign_in(ctx: Context) {
   console.log("Method sign_in called.");
   console.log("headers=", ctx.request.headers);
-  
+
   // chequeamos por null para evitar un error de typescript
 
-  const user_name = ctx.request.headers.get("username") || '{}';
+  const user_name = ctx.request.headers.get("username") || "{}";
   const password = ctx.request.headers.get("password");
   console.log("Received data");
   console.log("username=", user_name);
   console.log("password=", password);
 
   if (user_name === undefined) {
-    console.log("Usuario indefinido")
+    console.log("Usuario indefinido");
     ctx.response.status = 400;
     ctx.response.body = { "statusMessage": "Missing username parameter" };
   } else if (password === undefined) {
-    console.log("Password indefinido")
+    console.log("Password indefinido");
     ctx.response.status = 400;
     ctx.response.body = { "statusMessage": "Missing passord parameter" };
   } else {
@@ -59,7 +60,7 @@ async function sign_in(ctx: Context ) {
       password: string;
     }
 
-    const user = server_config.users.find((u:User) => u.id == user_name);
+    const user = server_config.users.find((u: User) => u.id == user_name);
 
     if (user !== undefined) {
       console.log("User recognized. ");
@@ -72,10 +73,10 @@ async function sign_in(ctx: Context ) {
 
       const current_time = Date.now();
       console.log("current_time=", current_time);
-      console.log("expiration_duration=", expiration_duration);
-      const expiration_time = current_time + expiration_duration;
+      console.log("jwt_duration=", jwt_duration);
+      const expiration_time = current_time + jwt_duration;
       console.log("expiration_time=", expiration_time);
-      var payload =  {
+      let payload = {
         "iat": current_time,
         "exp": expiration_time,
         "sub": user_name,
@@ -83,7 +84,7 @@ async function sign_in(ctx: Context ) {
       console.log("payload" + JSON.stringify(payload));
 
       const access_token = await create(
-        { alg: "HS512", typ: "JWT" },
+        { alg: jwt_algorithm, typ: "JWT" },
         payload,
         server_secret_key,
       );
@@ -110,6 +111,43 @@ async function sign_in(ctx: Context ) {
 }
 
 router.post("/api/sign_in", sign_in);
+
+// Middleware to check jwt
+
+let user: string | undefined;
+
+const validateToken = async (ctx: Context, next: any) => {
+  console.log("method validateToken called.");
+  const authorization: string | null = ctx.request.headers.get("Authorization");
+  // We remove Bearer
+  console.log("authorization=", authorization);
+  if (authorization != null) {
+    try {
+      const jwtToken = authorization.split(" ")[1];
+      const payload = await verify(jwtToken, server_secret_key, jwt_algorithm);
+      user = payload["sub"];
+      console.log("user=", user);
+      await next();
+    } catch {
+      ctx.response.body = { statusMessage: "Unauthorized" };
+      ctx.response.status = 401;
+      return;
+    }
+  } else {
+    ctx.response.body = { statusMessage: "Missing authorization header." };
+    ctx.response.status = 401;
+  }
+  console.log("sending status=", ctx.response.status);
+  console.log("sending body=", ctx.response.body);
+};
+
+router.get("/api/message", validateToken, (ctx) => {
+  console.log("getMessage method called");
+  ctx.response.status = 200;
+  ctx.response.body = { statusMessage: "Ok", logged_in_as: user };
+  console.log("sending status=", ctx.response.status);
+  console.log("sending body=", ctx.response.body);
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());
