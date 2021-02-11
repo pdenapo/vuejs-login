@@ -1,0 +1,10 @@
+{
+    "users": [
+        {
+            "id": "user",
+            "password": "secret"
+        }
+    ],
+    "server_secret_key": "my secret key",
+    "jwt_duration": 86400
+}
