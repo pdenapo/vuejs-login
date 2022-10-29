@@ -25,10 +25,11 @@
 </template>
 
 <script>
-import { API_URL } from "../main.js";
+import { API_URL } from "../main";
 
 export default {
   name: "Home",
+  pops: ["app_name"],
   data() {
     return {
       codigo: this.$route.params.codigo,

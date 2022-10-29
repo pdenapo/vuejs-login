@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <h1>Bienvenido a Viewjs.Login - Versión 0.1</h1>
+    <h1>¡Bienvenido a {{ app_name }} ! - Versión 0.1</h1>
     <h2 v-if="intentos == 0">Por favor identifíquese para Ingresar</h2>
     <h2 v-if="intentos > 0" id="failed">
       Usario o contraseña incorrectos. Por favor, inténtelo nuevamente.
@@ -12,7 +12,7 @@
           <v-col cols="12" sm="8" md="4">
             <v-card class="elevation-12">
               <v-toolbar color="primary" dark flat>
-                <v-toolbar-title>Ingresar a Luca Web</v-toolbar-title>
+                <v-toolbar-title>Ingresar a Vuejs.Login</v-toolbar-title>
                 <div class="flex-grow-1"></div>
               </v-toolbar>
               <v-card-text>
@@ -50,12 +50,11 @@
 
 
 <script>
-//import auth from "../auth";
-//import { accessSync } from "fs";
-
 export default {
+  pops: ["app_name"],
   data: function () {
     return {
+      app_name: "Vuejs.Login",
       credentials: {
         username: "",
         password: "",

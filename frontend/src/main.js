@@ -6,6 +6,7 @@ import * as config from '../../config.json';
 console.log("config=", config)
 const SERVER_URL = 'http://' + config.server_address + ':' + config.server_port
 export const API_URL = `${SERVER_URL}/api/`
+export const APP_NAME = config.app_name
 
 Vue.config.devtools = true
 Vue.config.productionTip = false;
@@ -89,12 +90,15 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('./views/Login.vue')
+    component: () => import('./views/Login.vue'),
+    props: APP_NAME
   },
   {
     path: '/privado',
     name: 'privado',
-    component: () => import('./views/Privado.vue')
+    component: () => import('./views/Privado.vue'),
+    props: APP_NAME
+
   },
   {
     path: '/about',
