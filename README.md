@@ -10,6 +10,8 @@ Several backend applications are provided.
 
 * One in the Python language
 
+* Yet another in Javascript using Deno.
+
 ## Runing the Backend
 
 yarn install  : installs all the dependencies. 
