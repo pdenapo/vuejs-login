@@ -1,5 +1,6 @@
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 import { create, verify } from "https://deno.land/x/djwt@v2.2/mod.ts";
+import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
 // Reads the configuration shared between the server and the client
 
@@ -29,7 +30,6 @@ router.get("/", (context) => {
   context.response.body = "Deno backend running at " + server_url;
 });
 
-const app = new Application();
 
 async function sign_in(ctx: Context) {
   console.log("Method sign_in called.");
@@ -149,6 +149,8 @@ router.get("/api/message", validateToken, (ctx) => {
   console.log("sending body=", ctx.response.body);
 });
 
+const app = new Application();
+app.use(oakCors()); // Enable CORS for All Routes
 app.use(router.routes());
 app.use(router.allowedMethods());
 
