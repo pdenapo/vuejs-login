@@ -1,0 +1,24 @@
+{
+	"name" : "jwtd",
+	"description" : "D implementation of JSON Web Token.",
+	"license": "MIT",
+	"authors": [
+		"Oleh Havrys",
+		"Sergey Buth",
+		"Tomáš Chaloupka",
+		"Lionello Lunesu"
+	],
+	"configurations": [
+		{
+			"name": "phobos",
+			"targetType": "library",
+			"versions": ["UsePhobos"]
+		},
+		{
+			"name": "unittest-phobos",
+			"mainSourceFile": "source/app.d",
+			"targetType": "executable",
+			"versions": ["UsePhobos"]
+		}
+	]
+}
